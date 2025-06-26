@@ -47,8 +47,13 @@
 			<a href="instituicao.php" target="janela">
 			Instituição</a>
 				</li>
+				<li>
+			<a href="notas.php" target="janela">
+			Notas</a>
+				</li>
 			</ol>
 		</li>
+
 	</ul>
 </div>
 </section>

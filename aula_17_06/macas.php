@@ -6,16 +6,16 @@
 	<p><input type="submit" name="botao" value="comprar"></p>
 </form>
 <?php
-	if(isset($_GET['botao'])){
+	if(isset($_GET['botao'])){ /*enviou o form*/
 		$numero=$_GET['quantidade'];
-		echo "<section class='primeira'>";
+		echo "<section class='primeira'>"; /* apenas quando o php é feito na mesma página*/
 		if($numero<12){
 			$total=$numero*4.00;
-			echo "<p> Sua compra deu R$ $total</p>";
-		}else if($numero>=12){
+		}else{
 			$total=$numero*3.00;
-			echo "<p> Sua compra deu R$ $total</p>";
 		}
+		$total=number_format($total,2,",",".");
+		echo "<p>Sua compra deu R$ $total</p>";
 		echo "</section>";
 	}
 ?>
