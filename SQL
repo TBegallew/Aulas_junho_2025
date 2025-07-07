@@ -1,0 +1,193 @@
+SQL - STRUCUTRED QUERY LANGUAGE 
+(Linguagem de Consulta Estruturada)
+
+DDL - Data Definition Language - create, drop, alter
+DML - Data Manipulation Language - insert, delete, update
+DQL - Data Query Language - select
+DCL - Data Control Language - grant, revoke
+DTL - Data Transaction Language - commit, rollback
+
+=====================================================
+1) Criar o Banco de Dados
+CREATE DATABASE <nome> COLLATE <caracteres>;
+Ex:
+CREATE DATABASE estoque COLLATE utf8mb4_general_ci;
+
+=======================================================
+2) Apagar um banco de dados     !!!!
+DROP DATABASE <nome>
+EX:
+DROP DATABASE estacionamento;
+
+======================================================
+3) Criando uma tabela
+CREATE TABLE <nome>(
+	<campo1_chave> <tipo> <nulo ou não> <chave?>,
+	<campo2> <tipo>,
+	<campo3> <tipo>
+	...
+);
+Ex:
+CREATE TABLE fabricante(
+    cod_fab int not null PRIMARY KEY,
+    nome varchar(30),
+    endereco varchar(70),
+    bairro varchar(30),
+    cidade varchar(30),
+    telefone varchar(14),
+    cnpj bigint
+    );
+
+
+!!!CHAVES ESTRANGEIRAS
+1->N  a chave do 1 vai para o N
+N->N a chave das duas vai para o relacionamento
+que será promovido a entidade 
+
+CREATE TABLE <nome>(
+	<chave primária> <tipo> NOT NULL PRIMARY KEY,
+	<chave estrangeira> <tipo> NOT NULL,
+	...Continua sua tabela...
+	...ao final:
+	FOREIGN KEY(<chave_estrangeira>) 
+	REFERENCES <tabela>(<chave primária dela>)
+);
+EX:
+CREATE TABLE produto(
+    cod_pro int not null PRIMARY KEY,
+    cod_fab int not null,
+    nome varchar(70),
+    valor decimal(6,2),
+    quantidade int,
+    data_fab date,
+    cor varchar(25),
+    FOREIGN KEY(cod_fab) REFERENCES fabricante(cod_fab)
+    );
+    
+=============================================================
+4) Renomeando uma tabela
+RENAME TABLE <nome_antigo> TO <nomenovo>
+EX:
+RENAME TABLE produtos TO produto;
+
+===============================================================
+5) Adicionando uma coluna
+ALTER TABLE <tabela> ADD <campo> <tipo>;
+***Vai para o fim da tabela
+
+ALTER TABLE <tabela> ADD <campo> <tipo> AFTER <outrocampo>;
+
+EX:
+ALTER TABLE produto ADD descricao text AFTER nome;
+
+=============================================================
+6) Renomeando uma coluna OU alterando seu tipo
+OBS: tipos numéricos(int,float,etc) 
+podem ser convertidos em varchar, mas o contrário 
+(varchar para int por ex.) Não.
+
+ALTER TABLE <tabela> CHANGE <velhonome> <novonome> <tipo>
+EX:
+ALTER TABLE produto CHANGE valor preco decimal(6,2);
+
+============================================================
+7) Apagando uma coluna     !!
+ALTER TABLE <tabela> DROP COLUMN <coluna>
+Ex:
+ALTER TABLE produto DROP COLUMN cor;
+============================================================
+8) Apagando uma tabela  !!!!
+DROP TABLE <tabela>
+Ex:
+DROP TABLE meapague
+==============================================================
+EXTRA: Trocar chaves
+
+Seja a tabela:
+CREATE TABLE teste(
+    cod_um int not null primary key,
+    cod_dois int,
+    cod_fab_um int not null,
+    cod_fab_dois int,
+    FOREIGN KEY(cod_fab_um) REFERENCES fabricante(cod_fab)
+    );
+
+
+1º) Tornar os campos que serão chaves não nulos
+a)ALTER TABLE teste CHANGE cod_dois cod_dois int not null;
+
+b)ALTER TABLE teste CHANGE cod_fab_dois cod_fab_dois int not null;
+
+2º) Retirar (não apagar, mas sim) a função de chave atual
+a)ALTER TABLE teste drop PRIMARY KEY;
+
+b)ALTER TABLE teste drop FOREIGN key cod_fab_um;
+b)ALTER TABLE teste drop index cod_fab_um;
+
+
+3º) Dar aos novos campos o título de chave
+a)ALTER TABLE teste add PRIMARY key(cod_dois);
+
+b)ALTER TABLE teste add FOREIGN key(cod_fab_dois) 
+REFERENCES fabricante(cod_fab);
+==============================================================
+9) Inserindo dados na tabela
+INSERT INTO <tabela>(<coluna1>,<coluna2>,...)
+VALUES(<valor1>,<valor2>,...);
+
+OU
+
+INSERT INTO <tabela>
+VALUES(<valor1>,<valor2>,...);
+
+!!!IMPORTANTE formato dos dados !!!!
+
+tinyint
+int           17
+big int
+
+real
+float             221.43
+decimal
+
+char
+varchar          'isto é um texto'
+text
+
+date          'AAAA-mm-dd' ex: '2025-07-04'
+time          'hh:mm:ss' ex: '15:10:35'
+datetime      'AAAA-mm-dd hh:mm:ss' ex: '2025-07-04 15:11:00'
+
+blob         'ksjdhbkjsabhajhs'  - objeto entre ''
+
+
+Ex:
+INSERT into produto(cod_pro,cod_fab,nome,
+                    descricao,preco,quantidade,data_fab)
+                    VALUES
+                    (1,1,'Fanta Laranja',
+                     'Fanta Laranja tradicional 2 litros',
+                     6.99,25,'2025-06-24');
+
+=================================================================
+
+10) Atualizando um dado
+UPDATE <tabela> set <CAMPO>=<valor>
+
+OU  ***múltiplos
+UPDATE <tabela> set <campo1>=<valor>,
+<campo2>=<valor>
+
+WHERE <campo_referência>=<valor>
+
+EX:
+UPDATE produto set preco=7.00,
+quantidade=15 
+WHERE nome='Fanta Laranja'
+
+=====================================================
+11) excluindo/deletando uma tupla(linha)
+DELETE FROM <tabela>;  ---apaga todos os dados
+OU
+DELETE FROM <tabela> WHERE <camporeferencia>=<valor>;
+Ex:
